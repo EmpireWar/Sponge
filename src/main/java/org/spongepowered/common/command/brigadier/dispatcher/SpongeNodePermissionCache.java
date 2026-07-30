@@ -62,8 +62,10 @@ public final class SpongeNodePermissionCache {
         try {
             ((CommandSourceStackBridge) source).bridge$setPotentialPermissionNode(supplier);
             final boolean result = node.canUse(source);
+            // Note: we check the subject rather than the CommandSource, as the latter is no longer the
+            // ServerPlayer itself - vanilla passes an anonymous CommandSource implementation instead.
             if (result && isRoot && node instanceof SpongePermissionWrappedLiteralCommandNode
-                    && ((CommandSourceStackBridge) source).bridge$getCommandSource() instanceof ServerPlayer) {
+                    && ((CommandCause) source).subject() instanceof ServerPlayer) {
                 // If the entity is a player, then we should try to add it anyway.
                 final String permission = supplier.get();
                 SpongePermissions.registerPermission(Sponge.server().serviceProvider().permissionService(), permission, PermissionLevel.ALL);
