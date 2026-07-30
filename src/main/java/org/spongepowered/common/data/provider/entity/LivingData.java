@@ -206,7 +206,7 @@ public final class LivingData {
                             }
                         })
                         .offerSingleAnd((h, v) -> {
-                            h.forceAddEffect(PotionEffectUtil.copyAsEffectInstance(v), null);
+                            h.addEffect(PotionEffectUtil.copyAsEffectInstance(v), null);
                             return true;
                         })
                         .removeSingleAnd((h, v) -> {
