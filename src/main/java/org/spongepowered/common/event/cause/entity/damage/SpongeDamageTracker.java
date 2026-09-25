@@ -94,7 +94,7 @@ public class SpongeDamageTracker implements DamageStepHistory {
         if (!this.rootSteps.isEmpty()) {
             final SpongeDamageStep previous = this.rootSteps.getLast();
             if (previous.damageAfterChildren().isEmpty()) {
-                LOGGER.warn("A new root step {} is being captured but previous root step {} hasn't finished.", step.type(), previous.type());
+//                LOGGER.warn("A new root step {} is being captured but previous root step {} hasn't finished.", step.type(), previous.type());
                 this.rootSteps.removeLast();
             }
         }
