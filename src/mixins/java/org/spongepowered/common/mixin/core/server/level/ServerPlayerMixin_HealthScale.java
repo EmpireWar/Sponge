@@ -44,9 +44,10 @@ import org.spongepowered.common.bridge.data.SpongeDataHolderBridge;
 import org.spongepowered.common.bridge.server.level.ServerPlayerEntityHealthScaleBridge;
 import org.spongepowered.common.mixin.core.world.entity.player.PlayerMixin;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 
 @Mixin(ServerPlayer.class)
@@ -97,19 +98,17 @@ public abstract class ServerPlayerMixin_HealthScale extends PlayerMixin implemen
 
     @Override
     public void bridge$refreshScaledHealth() {
-        // We need to use the dirty instances to signify that the player needs to have it updated, instead
-        // of modifying the attribute instances themselves, we bypass other potentially detrimental logic
-        // that would otherwise break the actual health scaling.
-        final Set<AttributeInstance> dirtyInstances = this.shadow$getAttributes().getAttributesToUpdate();
-        this.bridge$injectScaledHealth(dirtyInstances);
+        // Only send the (scaled) max health attribute. The vanilla dirty sets must not be touched here:
+        // attributesToUpdate drives LivingEntity#onAttributeUpdated (e.g. refreshDimensions for SCALE),
+        // and attributesToSync is sent to all trackers by ServerEntity, where ServerEntityMixin injects
+        // the scaled max health.
+        final List<AttributeInstance> instances = new ArrayList<>(1);
+        this.bridge$injectScaledHealth(instances);
 
         // Send the new information to the client.
         final FoodData foodData = this.shadow$getFoodData();
         this.connection.send(new ClientboundSetHealthPacket(this.bridge$getInternalScaledHealth(), foodData.getFoodLevel(), foodData.getSaturationLevel()));
-        this.connection.send(new ClientboundUpdateAttributesPacket(this.shadow$getId(), dirtyInstances));
-
-        // Reset the dirty instances since they've now been manually updated on the client.
-        dirtyInstances.clear();
+        this.connection.send(new ClientboundUpdateAttributesPacket(this.shadow$getId(), instances));
 
         // Clear the cached value, so it doesn't carry over to future calls to getInternalScaledHealth.
         this.impl$cachedMaxHealthAttribute = null;
