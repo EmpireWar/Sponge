@@ -803,7 +803,10 @@ public final class SpongeAdventure {
         final DataComponentPatch.Builder builder = DataComponentPatch.builder();
         componentMap.forEach((key, value) -> BuiltInRegistries.DATA_COMPONENT_TYPE.getOptional(SpongeAdventure.asVanilla(key)).ifPresent(type -> {
             if (value instanceof SpongeDataComponentValue(Optional value1)) {
-                builder.set((DataComponentType) type, value1.orElse(null));
+                // An empty value is a removed component, which the builder can't take as a null value
+                value1.ifPresentOrElse(v -> builder.set((DataComponentType) type, v), () -> builder.remove(type));
+            } else if (value instanceof DataComponentValue.Removed) {
+                builder.remove(type);
             }
         }));
         return builder.build();
