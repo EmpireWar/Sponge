@@ -73,17 +73,17 @@ abstract class ActivePagination {
                 .content("»")
                 .color(NamedTextColor.BLUE)
                 .decoration(TextDecoration.UNDERLINED, true)
-                .clickEvent(ClickEvent.runCommand("/sponge:pagination " + this.id.toString() + " next"))
+                .clickEvent(ClickEvent.runCommand("/pagination " + this.id.toString() + " next"))
                 .hoverEvent(HoverEvent.showText(Component.text("/page next")))
-                .insertion("/sponge:page next")
+                .insertion("/page next")
                 .build();
         this.prevPageText = Component.text()
                 .content("«")
                 .color(NamedTextColor.BLUE)
                 .decoration(TextDecoration.UNDERLINED, true)
-                .clickEvent(ClickEvent.runCommand("/sponge:pagination " + this.id.toString() + " prev"))
+                .clickEvent(ClickEvent.runCommand("/pagination " + this.id.toString() + " prev"))
                 .hoverEvent(HoverEvent.showText(Component.text("/page prev")))
-                .insertion("/sponge:page prev")
+                .insertion("/page prev")
                 .build();
         int maxContentLinesPerPage = calc.getLinesPerPage() - 1;
         if (title != null) {
@@ -171,16 +171,16 @@ abstract class ActivePagination {
         if (totalPages > 1) {
             ret.append(Component.text()
                     .content(String.valueOf(currentPage))
-                    .clickEvent(ClickEvent.runCommand("/sponge:pagination " + this.id + ' ' + currentPage))
+                    .clickEvent(ClickEvent.runCommand("/pagination " + this.id + ' ' + currentPage))
                     .hoverEvent(HoverEvent.showText(Component.text("/page " + currentPage)))
-                    .insertion("/sponge:page " + currentPage)
+                    .insertion("/page " + currentPage)
                     .build());
             ret.append(ActivePagination.SLASH_TEXT);
             ret.append(Component.text()
                     .content(String.valueOf(totalPages))
-                    .clickEvent(ClickEvent.runCommand("/sponge:pagination " + this.id + ' ' + totalPages))
+                    .clickEvent(ClickEvent.runCommand("/pagination " + this.id + ' ' + totalPages))
                     .hoverEvent(HoverEvent.showText(Component.text("/page " + totalPages)))
-                    .insertion("/sponge:page " + totalPages)
+                    .insertion("/page " + totalPages)
                     .build());
             needsDiv = true;
         }
